@@ -1,0 +1,26 @@
+name: CI on Commit
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
+
+    - name: Restore dependencies
+      run: nuget restore GoogleDriveSync.sln
+
+    - name: Build solution
+      run: msbuild GoogleDriveSync.sln /p:Configuration=Release
