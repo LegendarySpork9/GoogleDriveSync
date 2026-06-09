@@ -32,8 +32,8 @@ namespace GoogleDriveSync.Tests.Functions
                     Type = "txt",
                     PathIds = "q2iEH0smrmudiaBCzkQkn2lbrGqKGL2M0,c7fpJ6Y6eUMpNuqrGmLVhztZOL4l5pxT7",
                     Path = "Test Folder,Test Folder Two",
-                    Created = DateTime.Parse("01/06/1985 11:05:12"),
-                    LastModified = DateTime.Parse("05/09/1987 13:45:00")
+                    Created = new DateTime(1985, 6, 1, 11, 5, 12, DateTimeKind.Utc),
+                    LastModified = new DateTime(1987, 9, 5, 13, 45, 0, DateTimeKind.Utc)
                 }
             ];
 
@@ -46,8 +46,8 @@ namespace GoogleDriveSync.Tests.Functions
                     Type = "txt",
                     Path = "Test Folder",
                     Hidden = false,
-                    Created = DateTime.Parse("01/06/1985 10:55:56"),
-                    LastModified = DateTime.Parse("03/08/1987 14:23:12")
+                    Created = new DateTime(1985, 6, 1, 10, 55, 56, DateTimeKind.Utc),
+                    LastModified = new DateTime(1987, 8, 3, 14, 23, 12, DateTimeKind.Utc)
                 }
             ];
 
@@ -86,8 +86,8 @@ namespace GoogleDriveSync.Tests.Functions
                     Type = "txt",
                     PathIds = "q2iEH0smrmudiaBCzkQkn2lbrGqKGL2M0,c7fpJ6Y6eUMpNuqrGmLVhztZOL4l5pxT7",
                     Path = "Test Folder,Test Folder Two",
-                    Created = DateTime.Parse("01/06/1985 11:05:12"),
-                    LastModified = DateTime.Parse("05/09/1987 13:45:00")
+                    Created = new DateTime(1985, 6, 1, 11, 5, 12, DateTimeKind.Utc),
+                    LastModified = new DateTime(1987, 9, 5, 13, 45, 0, DateTimeKind.Utc)
                 }
             ];
 
@@ -100,8 +100,8 @@ namespace GoogleDriveSync.Tests.Functions
                     Type = "txt",
                     Path = "Test Folder",
                     Hidden = false,
-                    Created = DateTime.Parse("01/06/1985 10:55:56"),
-                    LastModified = DateTime.Parse("05/09/1987 13:45:00")
+                    Created = new DateTime(1985, 6, 1, 10, 55, 56, DateTimeKind.Utc),
+                    LastModified = new DateTime(1987, 9, 5, 13, 45, 0, DateTimeKind.Utc)
                 }
             ];
 
@@ -137,8 +137,8 @@ namespace GoogleDriveSync.Tests.Functions
                     Type = "txt",
                     PathIds = "q2iEH0smrmudiaBCzkQkn2lbrGqKGL2M0",
                     Path = "Test Folder",
-                    Created = DateTime.Parse("01/06/1985 11:05:12"),
-                    LastModified = DateTime.Parse("05/09/1987 13:45:00")
+                    Created = new DateTime(1985, 6, 1, 11, 5, 12, DateTimeKind.Utc),
+                    LastModified = new DateTime(1987, 9, 5, 13, 45, 0, DateTimeKind.Utc)
                 }
             ];
 
@@ -151,8 +151,8 @@ namespace GoogleDriveSync.Tests.Functions
                     Type = "txt",
                     Path = "Test Folder",
                     Hidden = false,
-                    Created = DateTime.Parse("01/06/1985 10:55:56"),
-                    LastModified = DateTime.Parse("03/08/1987 14:23:12")
+                    Created = new DateTime(1985, 6, 1, 10, 55, 56, DateTimeKind.Utc),
+                    LastModified = new DateTime(1987, 8, 3, 14, 23, 12, DateTimeKind.Utc)
                 }
             ];
 
@@ -188,8 +188,8 @@ namespace GoogleDriveSync.Tests.Functions
                     Type = "txt",
                     PathIds = "q2iEH0smrmudiaBCzkQkn2lbrGqKGL2M0",
                     Path = "Test Folder",
-                    Created = DateTime.Parse("01/06/1985 11:05:12"),
-                    LastModified = DateTime.Parse("03/08/1987 13:45:00")
+                    Created = new DateTime(1985, 6, 1, 11, 5, 12, DateTimeKind.Utc),
+                    LastModified = new DateTime(1987, 8, 3, 13, 45, 0, DateTimeKind.Utc)
                 }
             ];
 
@@ -202,8 +202,8 @@ namespace GoogleDriveSync.Tests.Functions
                     Type = "txt",
                     Path = "Test Folder",
                     Hidden = false,
-                    Created = DateTime.Parse("01/06/1985 10:55:56"),
-                    LastModified = DateTime.Parse("05/09/1987 14:23:12")
+                    Created = new DateTime(1985, 6, 1, 10, 55, 56, DateTimeKind.Utc),
+                    LastModified = new DateTime(1987, 9, 5, 14, 23, 12, DateTimeKind.Utc)
                 }
             ];
 

@@ -17,8 +17,8 @@ namespace GoogleDriveSync.Tests.Functions
             {
                 Name = "Test.txt",
                 Parents = new List<string> { "q2iEH0smrmudiaBCzkQkn2lbrGqKGL2M0" },
-                CreatedTime = DateTime.Parse("01/06/1985 11:05:12"),
-                ModifiedTime = DateTime.Parse("05/09/1987 13:45:00")
+                CreatedTime = new DateTime(1985, 6, 1, 10, 5, 12, DateTimeKind.Utc),
+                ModifiedTime = new DateTime(1987, 9, 5, 12, 45, 0, DateTimeKind.Utc)
             };
 
             string[] result = LoggerFunction.FormatFileMetaData(testFile, "Create").Split(',');
@@ -38,7 +38,7 @@ namespace GoogleDriveSync.Tests.Functions
         {
             File testFile = new()
             {
-                ModifiedTime = DateTime.Parse("05/09/1987 13:45:00")
+                ModifiedTime = new DateTime(1987, 9, 5, 12, 45, 0, DateTimeKind.Utc)
             };
 
             string result = LoggerFunction.FormatFileMetaData(testFile, "Update");
@@ -54,7 +54,7 @@ namespace GoogleDriveSync.Tests.Functions
         {
             File testFile = new()
             {
-                ModifiedTime = DateTime.Parse("05/09/1987 13:45:00")
+                ModifiedTime = new DateTime(1987, 9, 5, 12, 45, 0, DateTimeKind.Utc)
             };
 
             string result = LoggerFunction.FormatFileMetaData(testFile, "Move");
