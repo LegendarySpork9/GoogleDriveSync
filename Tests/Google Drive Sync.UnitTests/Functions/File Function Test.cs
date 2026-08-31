@@ -1,10 +1,10 @@
-﻿// Copyright © - 14/05/2025 - Toby Hunter
+// Copyright © - 14/05/2025 - Toby Hunter
 using GoogleDriveSync.Abstractions;
 using GoogleDriveSync.Functions;
 using GoogleDriveSync.Models;
 using Moq;
 
-namespace GoogleDriveSync.Tests.Functions
+namespace GoogleDriveSync.UnitTests.Functions
 {
     [TestClass]
     public class FileFunctionTest

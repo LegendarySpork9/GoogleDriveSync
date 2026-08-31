@@ -1,7 +1,7 @@
-﻿// Copyright © - 14/05/2025 - Toby Hunter
+// Copyright © - 14/05/2025 - Toby Hunter
 using GoogleDriveSync.Converters;
 
-namespace GoogleDriveSync.Tests.Converters
+namespace GoogleDriveSync.UnitTests.Converters
 {
     [TestClass]
     public class GoogleDriveConverterTest
@@ -128,7 +128,7 @@ namespace GoogleDriveSync.Tests.Converters
         #endregion
 
         /// <summary>
-        /// Checks whether the GetFilePath method returns the expected file location. 
+        /// Checks whether the GetFilePath method returns the expected file location.
         /// </summary>
         [TestMethod]
         public void TestGetFilePath()

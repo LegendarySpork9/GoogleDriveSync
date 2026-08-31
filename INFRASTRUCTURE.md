@@ -24,7 +24,8 @@ Google Drive Sync is a Windows Forms desktop application for bidirectional file 
 | Testing | MSTest | 3.6.4 |
 | Test SDK | Microsoft.NET.Test.Sdk | 17.12.0 |
 | Mocking | Moq | 4.20.72 |
-| Code Coverage | Microsoft.Testing.Extensions.CodeCoverage | 17.12.6 |
+| Code Coverage (Collector) | coverlet.collector | 6.0.2 |
+| Code Coverage (Platform) | Microsoft.Testing.Extensions.CodeCoverage | 17.12.6 |
 | Test Reporting | Microsoft.Testing.Extensions.TrxReport | 1.4.3 |
 
 ## Solution Structure
@@ -41,10 +42,16 @@ GoogleDriveSync/
 |   +-- Models/                         # Data models
 |   +-- Properties/                     # Assembly info, resources, settings
 |   +-- Services/                       # Business logic services
-+-- Google Drive Sync.Tests/            # Unit test project (.NET 4.7.2)
-|   +-- Converters/                     # Converter tests
-|   +-- Functions/                      # Function tests
-|   +-- Services/                       # Service tests
++-- Tests/
+|   +-- Google Drive Sync.UnitTests/        # Unit tests — converters, functions, helpers only
+|   |   +-- Converters/                     # Converter tests
+|   |   +-- Functions/                      # Function tests
+|   +-- Google Drive Sync.PersistenceTests/ # Persistence tests — file I/O, services with data access
+|   |   +-- Implementations/               # File system and metadata wrapper tests
+|   |   +-- Services/                       # Document service tests
+|   +-- Google Drive Sync.IntegrationTests/ # Integration tests — Google API, service orchestration
+|   |   +-- Implementations/               # Google credential and client wrapper tests
+|   |   +-- Services/                       # Google API service tests
 +-- .github/workflows/                  # CI/CD pipeline definitions
 ```
 
@@ -275,7 +282,7 @@ All workflows run on `windows-latest`.
 | Workflow | Trigger | Steps |
 |---|---|---|
 | **CI on Commit** (`Commit.yml`) | Push to any branch | Checkout, Setup MSBuild, Setup NuGet, Restore (`nuget restore`), Build (`msbuild /p:Configuration=Release`) |
-| **CI on Pull Request** (`Pull Request.yml`) | PR to any branch | Checkout, Setup MSBuild, Setup NuGet, Restore, Build, Run Tests (`dotnet test`) |
+| **CI on Pull Request** (`Pull Request.yml`) | PR to any branch | Checkout, Setup MSBuild, Setup NuGet, Restore, Build, Run Tests with Coverage (`dotnet test --collect:"XPlat Code Coverage"`), Generate Coverage Report, Post Coverage Status, Upload Coverage Artifact |
 | **Check for Linked Issue** (`PR Linked Issue.yml`) | PR opened/edited/reopened/synchronised | Verifies PR has linked GitHub issues via description, comments, or Development section |
 
 ### Build Configuration
@@ -284,6 +291,15 @@ All workflows run on `windows-latest`.
 - **Package Manager:** NuGet (via `NuGet/setup-nuget@v2`)
 - **Configuration:** Release
 - **Test Runner:** `dotnet test` (MSTest with method-level parallelisation)
+
+### Code Coverage
+
+- **Collector:** XPlat Code Coverage (via `coverlet.collector`)
+- **Configuration:** `coverlet.runsettings` in solution root
+- **Report Generator:** `dotnet-reportgenerator-globaltool`
+- **Report Formats:** Cobertura, JsonSummary
+- **Exclusions:** Program entry points, Models, Entities, generated code
+- **CI Integration:** Coverage percentage posted to PR status and uploaded as artifact
 
 ## Hosting Requirements
 

@@ -1,11 +1,17 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google Drive Sync", "Google Drive Sync\Google Drive Sync.csproj", "{8185C84B-AD50-4308-9686-2C94C3B48FBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google Drive Sync.Tests", "Google Drive Sync.Tests\Google Drive Sync.Tests.csproj", "{D31F07D8-FDBD-4D53-BFAF-7D8E041C4FD9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google Drive Sync.UnitTests", "Tests\Google Drive Sync.UnitTests\Google Drive Sync.UnitTests.csproj", "{D31F07D8-FDBD-4D53-BFAF-7D8E041C4FD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google Drive Sync.PersistenceTests", "Tests\Google Drive Sync.PersistenceTests\Google Drive Sync.PersistenceTests.csproj", "{B7D4E2F1-9A3C-4B5D-8E6F-1A2B3C4D5E6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google Drive Sync.IntegrationTests", "Tests\Google Drive Sync.IntegrationTests\Google Drive Sync.IntegrationTests.csproj", "{C8E5F3A2-0B4D-5C6E-9F70-2B3C4D5E6F7A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +27,22 @@ Global
 		{D31F07D8-FDBD-4D53-BFAF-7D8E041C4FD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D31F07D8-FDBD-4D53-BFAF-7D8E041C4FD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D31F07D8-FDBD-4D53-BFAF-7D8E041C4FD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7D4E2F1-9A3C-4B5D-8E6F-1A2B3C4D5E6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7D4E2F1-9A3C-4B5D-8E6F-1A2B3C4D5E6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7D4E2F1-9A3C-4B5D-8E6F-1A2B3C4D5E6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7D4E2F1-9A3C-4B5D-8E6F-1A2B3C4D5E6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8E5F3A2-0B4D-5C6E-9F70-2B3C4D5E6F7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8E5F3A2-0B4D-5C6E-9F70-2B3C4D5E6F7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8E5F3A2-0B4D-5C6E-9F70-2B3C4D5E6F7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8E5F3A2-0B4D-5C6E-9F70-2B3C4D5E6F7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D31F07D8-FDBD-4D53-BFAF-7D8E041C4FD9} = {A1B2C3D4-E5F6-7890-ABCD-EF1234567890}
+		{B7D4E2F1-9A3C-4B5D-8E6F-1A2B3C4D5E6F} = {A1B2C3D4-E5F6-7890-ABCD-EF1234567890}
+		{C8E5F3A2-0B4D-5C6E-9F70-2B3C4D5E6F7A} = {A1B2C3D4-E5F6-7890-ABCD-EF1234567890}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1FB1B522-7EEC-4B2E-9DE5-45525AB147D6}
