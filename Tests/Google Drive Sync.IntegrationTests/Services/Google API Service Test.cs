@@ -426,5 +426,228 @@ namespace GoogleDriveSync.IntegrationTests.Services
             Assert.IsTrue(_googleAPI.GetHasErrored());
             _MockUserNotifier.Verify(un => un.ShowMessage(It.Is<string>(s => s.Contains("update")), "Warning"), Times.Once);
         }
+        /// <summary>
+        /// Checks whether the CreateFile method uploads a file to the root folder.
+        /// </summary>
+        [TestMethod]
+        public async Task TestCreateFile()
+        {
+            string root = "rootFolderId";
+
+            AppSettingsModel.DriveFolder = root;
+
+            Mock<ICredentialProvider> _mockCredentialProvider = new();
+            _mockCredentialProvider.Setup(cp => cp.GetCredentials()).ReturnsAsync(((UserCredential)null!, false));
+
+            Mock<Google.Apis.Upload.IUploadProgress> _mockProgress = new();
+            _mockProgress.Setup(p => p.Status).Returns(Google.Apis.Upload.UploadStatus.Completed);
+
+            Mock<IGoogleDriveClient> _mockGoogleDriveClient = new();
+
+            Google.Apis.Drive.v3.Data.File rootFolder = new() { Id = root, Name = "Test", Parents = [] };
+
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFolders(null)).ReturnsAsync(([rootFolder], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFolders(root)).ReturnsAsync(([], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFiles(root)).ReturnsAsync(([], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.CreateFile(It.IsAny<FileModel>(), It.IsAny<string>())).ReturnsAsync((_mockProgress.Object, false));
+
+            GoogleAPIService _googleAPI = new(_MockLogger.Object, _mockCredentialProvider.Object, _mockGoogleDriveClient.Object, _MockUserNotifier.Object, root);
+
+            await _googleAPI.GetData();
+
+            FileModel testFile = new()
+            {
+                Name = "NewFile",
+                Type = "txt",
+                Id = @"C:\Local\NewFile.txt",
+                Path = "Test,Test"
+            };
+
+            await _googleAPI.CreateFile(testFile);
+
+            Assert.IsFalse(_googleAPI.GetHasErrored());
+            _mockGoogleDriveClient.Verify(gdc => gdc.CreateFile(testFile, It.IsAny<string>()), Times.Once);
+        }
+
+        /// <summary>
+        /// Checks whether the CreateFile method creates missing folders before uploading.
+        /// </summary>
+        [TestMethod]
+        public async Task TestCreateFileCreatesFolder()
+        {
+            string root = "rootFolderId";
+            string newFolderId = "newFolderId";
+
+            AppSettingsModel.DriveFolder = root;
+
+            Mock<ICredentialProvider> _mockCredentialProvider = new();
+            _mockCredentialProvider.Setup(cp => cp.GetCredentials()).ReturnsAsync(((UserCredential)null!, false));
+
+            Mock<Google.Apis.Upload.IUploadProgress> _mockProgress = new();
+            _mockProgress.Setup(p => p.Status).Returns(Google.Apis.Upload.UploadStatus.Completed);
+
+            Mock<IGoogleDriveClient> _mockGoogleDriveClient = new();
+
+            Google.Apis.Drive.v3.Data.File rootFolder = new() { Id = root, Name = "Test", Parents = [] };
+            Google.Apis.Drive.v3.Data.File createdFolder = new() { Id = newFolderId };
+
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFolders(null)).ReturnsAsync(([rootFolder], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFolders(root)).ReturnsAsync(([], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFiles(root)).ReturnsAsync(([], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.CreateFolder("SubFolder", root)).ReturnsAsync((createdFolder, false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.CreateFile(It.IsAny<FileModel>(), It.IsAny<string>())).ReturnsAsync((_mockProgress.Object, false));
+
+            GoogleAPIService _googleAPI = new(_MockLogger.Object, _mockCredentialProvider.Object, _mockGoogleDriveClient.Object, _MockUserNotifier.Object, root);
+
+            await _googleAPI.GetData();
+
+            FileModel testFile = new()
+            {
+                Name = "NewFile",
+                Type = "txt",
+                Id = @"C:\Local\NewFile.txt",
+                Path = @"Test,Test\SubFolder"
+            };
+
+            await _googleAPI.CreateFile(testFile);
+
+            _mockGoogleDriveClient.Verify(gdc => gdc.CreateFolder("SubFolder", root), Times.Once);
+            _mockGoogleDriveClient.Verify(gdc => gdc.CreateFile(testFile, It.IsAny<string>()), Times.Once);
+        }
+
+        /// <summary>
+        /// Checks whether the CreateFile method propagates upload errors.
+        /// </summary>
+        [TestMethod]
+        public async Task TestCreateFileError()
+        {
+            string root = "rootFolderId";
+
+            AppSettingsModel.DriveFolder = root;
+
+            Mock<ICredentialProvider> _mockCredentialProvider = new();
+            _mockCredentialProvider.Setup(cp => cp.GetCredentials()).ReturnsAsync(((UserCredential)null!, false));
+
+            Mock<Google.Apis.Upload.IUploadProgress> _mockProgress = new();
+            _mockProgress.Setup(p => p.Status).Returns(Google.Apis.Upload.UploadStatus.Failed);
+
+            Mock<IGoogleDriveClient> _mockGoogleDriveClient = new();
+
+            Google.Apis.Drive.v3.Data.File rootFolder = new() { Id = root, Name = "Test", Parents = [] };
+
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFolders(null)).ReturnsAsync(([rootFolder], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFolders(root)).ReturnsAsync(([], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFiles(root)).ReturnsAsync(([], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.CreateFile(It.IsAny<FileModel>(), It.IsAny<string>())).ReturnsAsync((_mockProgress.Object, true));
+
+            GoogleAPIService _googleAPI = new(_MockLogger.Object, _mockCredentialProvider.Object, _mockGoogleDriveClient.Object, _MockUserNotifier.Object, root);
+
+            await _googleAPI.GetData();
+
+            FileModel testFile = new()
+            {
+                Name = "NewFile",
+                Type = "txt",
+                Id = @"C:\Local\NewFile.txt",
+                Path = "Test,Test"
+            };
+
+            await _googleAPI.CreateFile(testFile);
+
+            Assert.IsTrue(_googleAPI.GetHasErrored());
+            _MockUserNotifier.Verify(un => un.ShowMessage(It.Is<string>(s => s.Contains("upload")), "Warning"), Times.Once);
+        }
+
+        /// <summary>
+        /// Checks whether the MoveFile method moves a file to the correct folder.
+        /// </summary>
+        [TestMethod]
+        public async Task TestMoveFile()
+        {
+            string root = "rootFolderId";
+            string subFolderId = "subFolderId";
+
+            AppSettingsModel.DriveFolder = root;
+
+            Mock<ICredentialProvider> _mockCredentialProvider = new();
+            _mockCredentialProvider.Setup(cp => cp.GetCredentials()).ReturnsAsync(((UserCredential)null!, false));
+
+            Mock<Google.Apis.Upload.IUploadProgress> _mockProgress = new();
+            _mockProgress.Setup(p => p.Status).Returns(Google.Apis.Upload.UploadStatus.Completed);
+
+            Mock<IGoogleDriveClient> _mockGoogleDriveClient = new();
+
+            Google.Apis.Drive.v3.Data.File rootFolder = new() { Id = root, Name = "Test", Parents = [] };
+            Google.Apis.Drive.v3.Data.File subFolder = new() { Id = subFolderId, Name = "Destination", Parents = [root] };
+
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFolders(null)).ReturnsAsync(([rootFolder], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFolders(root)).ReturnsAsync(([subFolder], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFolders(subFolderId)).ReturnsAsync(([], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFiles(root)).ReturnsAsync(([], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFiles(subFolderId)).ReturnsAsync(([], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.MoveFile(It.IsAny<FileModel>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((_mockProgress.Object, false));
+
+            GoogleAPIService _googleAPI = new(_MockLogger.Object, _mockCredentialProvider.Object, _mockGoogleDriveClient.Object, _MockUserNotifier.Object, root);
+
+            await _googleAPI.GetData();
+
+            FileModel testFile = new()
+            {
+                Name = "Moved",
+                Type = "txt",
+                Id = "fileId1,C:\\local\\Moved.txt",
+                PathIds = @"rootFolderId\oldParentId",
+                Path = @"Test\Destination,Test\OldFolder"
+            };
+
+            await _googleAPI.MoveFile(testFile);
+
+            Assert.IsFalse(_googleAPI.GetHasErrored());
+            _mockGoogleDriveClient.Verify(gdc => gdc.MoveFile(testFile, "oldParentId", It.IsAny<string>()), Times.Once);
+        }
+
+        /// <summary>
+        /// Checks whether the MoveFile method propagates errors from the Google Drive client.
+        /// </summary>
+        [TestMethod]
+        public async Task TestMoveFileError()
+        {
+            string root = "rootFolderId";
+
+            AppSettingsModel.DriveFolder = root;
+
+            Mock<ICredentialProvider> _mockCredentialProvider = new();
+            _mockCredentialProvider.Setup(cp => cp.GetCredentials()).ReturnsAsync(((UserCredential)null!, false));
+
+            Mock<Google.Apis.Upload.IUploadProgress> _mockProgress = new();
+            _mockProgress.Setup(p => p.Status).Returns(Google.Apis.Upload.UploadStatus.Failed);
+
+            Mock<IGoogleDriveClient> _mockGoogleDriveClient = new();
+
+            Google.Apis.Drive.v3.Data.File rootFolder = new() { Id = root, Name = "Test", Parents = [] };
+
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFolders(null)).ReturnsAsync(([rootFolder], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFolders(root)).ReturnsAsync(([], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.GetFiles(root)).ReturnsAsync(([], false));
+            _mockGoogleDriveClient.Setup(gdc => gdc.MoveFile(It.IsAny<FileModel>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync((_mockProgress.Object, true));
+
+            GoogleAPIService _googleAPI = new(_MockLogger.Object, _mockCredentialProvider.Object, _mockGoogleDriveClient.Object, _MockUserNotifier.Object, root);
+
+            await _googleAPI.GetData();
+
+            FileModel testFile = new()
+            {
+                Name = "Moved",
+                Type = "txt",
+                Id = "fileId1,C:\\local\\Moved.txt",
+                PathIds = @"rootFolderId\oldParentId",
+                Path = "Test,Test"
+            };
+
+            await _googleAPI.MoveFile(testFile);
+
+            Assert.IsTrue(_googleAPI.GetHasErrored());
+            _MockUserNotifier.Verify(un => un.ShowMessage(It.Is<string>(s => s.Contains("move")), "Warning"), Times.Once);
+        }
     }
 }
