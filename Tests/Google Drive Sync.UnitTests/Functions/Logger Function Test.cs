@@ -1,8 +1,8 @@
-﻿// Copyright © - 14/05/2025 - Toby Hunter
+// Copyright © - 14/05/2025 - Toby Hunter
 using GoogleDriveSync.Functions;
 using File = Google.Apis.Drive.v3.Data.File;
 
-namespace GoogleDriveSync.Tests.Functions
+namespace GoogleDriveSync.UnitTests.Functions
 {
     [TestClass]
     public class LoggerFunctionTest

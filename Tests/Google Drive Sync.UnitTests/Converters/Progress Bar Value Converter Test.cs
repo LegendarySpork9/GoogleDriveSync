@@ -1,7 +1,7 @@
-﻿// Copyright © - 14/05/2025 - Toby Hunter
+// Copyright © - 14/05/2025 - Toby Hunter
 using GoogleDriveSync.Converters;
 
-namespace GoogleDriveSync.Tests.Converters
+namespace GoogleDriveSync.UnitTests.Converters
 {
     [TestClass]
     public class ProgressBarValueConverterTest
