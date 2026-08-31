@@ -597,7 +597,7 @@ namespace GoogleDriveSync.IntegrationTests.Services
                 Type = "txt",
                 Id = "fileId1,C:\\local\\Moved.txt",
                 PathIds = @"rootFolderId\oldParentId",
-                Path = @"Test\Destination,Test\OldFolder"
+                Path = @"Test\OldFolder,Test\Destination"
             };
 
             await _googleAPI.MoveFile(testFile);
