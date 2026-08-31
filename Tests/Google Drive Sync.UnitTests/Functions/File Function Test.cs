@@ -219,10 +219,128 @@ namespace GoogleDriveSync.UnitTests.Functions
         }
 
         /// <summary>
-        /// Checks whether the IsFileLocked method returns the expected value.
+        /// Checks whether the CompareForChanges method detects a file not uploaded to Google Drive.
         /// </summary>
         [TestMethod]
-        public void TestIsFileLocked()
+        public void TestCompareForChangesNotUploaded()
+        {
+            Mock<IFileSystem> _mockFileSystem = new();
+            Mock<IClock> _mockClock = new();
+            _mockClock.Setup(mc => mc.DefaultDate).Returns(new DateTime(1900, 01, 01));
+
+            FileFunction _fileFunction = new(_MockLogger.Object, _mockFileSystem.Object, _mockClock.Object);
+
+            List<FileModel> googleDrive = [];
+
+            List<FileModel> localDrive =
+            [
+                new()
+                {
+                    Id = "C:\\GDSTests\\Book Tests\\Test.txt",
+                    Name = "Test",
+                    Type = "txt",
+                    Path = "Test Folder",
+                    Hidden = false,
+                    Created = new DateTime(1985, 6, 1, 10, 55, 56, DateTimeKind.Utc),
+                    LastModified = new DateTime(1987, 9, 5, 14, 23, 12, DateTimeKind.Utc)
+                }
+            ];
+
+            List<FileModel> result = _fileFunction.CompareForChanges(googleDrive, localDrive);
+
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(2, result[0].Changes.Count);
+            Assert.AreEqual("Not Uploaded", result[0].Changes[0].OldValue);
+            Assert.AreEqual("Down", result[0].Changes[0].Stream);
+        }
+
+        /// <summary>
+        /// Checks whether the CompareForChanges method detects a file not downloaded from Google Drive.
+        /// </summary>
+        [TestMethod]
+        public void TestCompareForChangesNotDownloaded()
+        {
+            Mock<IFileSystem> _mockFileSystem = new();
+            Mock<IClock> _mockClock = new();
+            _mockClock.Setup(mc => mc.DefaultDate).Returns(new DateTime(1900, 01, 01));
+
+            FileFunction _fileFunction = new(_MockLogger.Object, _mockFileSystem.Object, _mockClock.Object);
+
+            List<FileModel> googleDrive =
+            [
+                new()
+                {
+                    Id = "rqfqjFATIC6bSvmuTxvov0BD3kVvh0UYE",
+                    Name = "Test",
+                    Type = "txt",
+                    PathIds = "q2iEH0smrmudiaBCzkQkn2lbrGqKGL2M0",
+                    Path = "Test Folder",
+                    Created = new DateTime(1985, 6, 1, 11, 5, 12, DateTimeKind.Utc),
+                    LastModified = new DateTime(1987, 9, 5, 13, 45, 0, DateTimeKind.Utc)
+                }
+            ];
+
+            List<FileModel> localDrive = [];
+
+            List<FileModel> result = _fileFunction.CompareForChanges(googleDrive, localDrive);
+
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(2, result[0].Changes.Count);
+            Assert.AreEqual("Not Downloaded", result[0].Changes[0].OldValue);
+            Assert.AreEqual("Up", result[0].Changes[0].Stream);
+        }
+
+        /// <summary>
+        /// Checks whether the CompareForChanges method returns no changes when files are identical.
+        /// </summary>
+        [TestMethod]
+        public void TestCompareForChangesNoChanges()
+        {
+            Mock<IFileSystem> _mockFileSystem = new();
+            Mock<IClock> _mockClock = new();
+            _mockClock.Setup(mc => mc.DefaultDate).Returns(new DateTime(1900, 01, 01));
+
+            FileFunction _fileFunction = new(_MockLogger.Object, _mockFileSystem.Object, _mockClock.Object);
+
+            List<FileModel> googleDrive =
+            [
+                new()
+                {
+                    Id = "rqfqjFATIC6bSvmuTxvov0BD3kVvh0UYE",
+                    Name = "Test",
+                    Type = "txt",
+                    PathIds = "q2iEH0smrmudiaBCzkQkn2lbrGqKGL2M0",
+                    Path = "Test Folder",
+                    Created = new DateTime(1985, 6, 1, 11, 5, 12, DateTimeKind.Utc),
+                    LastModified = new DateTime(1987, 9, 5, 13, 45, 0, DateTimeKind.Utc)
+                }
+            ];
+
+            List<FileModel> localDrive =
+            [
+                new()
+                {
+                    Id = "C:\\GDSTests\\Book Tests\\Test.txt",
+                    Name = "Test",
+                    Type = "txt",
+                    Path = "Test Folder",
+                    Hidden = false,
+                    Created = new DateTime(1985, 6, 1, 10, 55, 56, DateTimeKind.Utc),
+                    LastModified = new DateTime(1987, 9, 5, 13, 45, 0, DateTimeKind.Utc)
+                }
+            ];
+
+            List<FileModel> result = _fileFunction.CompareForChanges(googleDrive, localDrive);
+
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(0, result[0].Changes.Count);
+        }
+
+        /// <summary>
+        /// Checks whether the IsFileLocked method returns false when the file is not locked.
+        /// </summary>
+        [TestMethod]
+        public void TestIsFileLockedReturnsFalse()
         {
             Mock<IFileSystem> _mockFileSystem = new();
             _mockFileSystem.Setup(fs => fs.TryOpenRead(It.IsAny<string>())).Returns(true);
@@ -233,6 +351,23 @@ namespace GoogleDriveSync.UnitTests.Functions
             bool result = _fileFunction.IsFileLocked(new("C:\\GDSTests\\Book Tests\\Test.txt"));
 
             Assert.IsFalse(result);
+        }
+
+        /// <summary>
+        /// Checks whether the IsFileLocked method returns true when the file is locked.
+        /// </summary>
+        [TestMethod]
+        public void TestIsFileLockedReturnsTrue()
+        {
+            Mock<IFileSystem> _mockFileSystem = new();
+            _mockFileSystem.Setup(fs => fs.TryOpenRead(It.IsAny<string>())).Returns(false);
+            Mock<IClock> _mockClock = new();
+
+            FileFunction _fileFunction = new(_MockLogger.Object, _mockFileSystem.Object, _mockClock.Object);
+
+            bool result = _fileFunction.IsFileLocked(new("C:\\GDSTests\\Book Tests\\Test.txt"));
+
+            Assert.IsTrue(result);
         }
     }
 }

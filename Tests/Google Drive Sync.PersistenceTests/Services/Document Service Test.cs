@@ -266,6 +266,25 @@ namespace GoogleDriveSync.PersistenceTests.Services
         }
 
         /// <summary>
+        /// Checks whether the UnblockFile method removes the zone identifier.
+        /// </summary>
+        [TestMethod]
+        public void TestUnblockFile()
+        {
+            FileSystemWrapper _fileSystem = new();
+            FileMetadataProvider _fileMetadata = new();
+
+            string filePath = Path.Combine(_TempDirectory, "Downloaded.txt");
+            File.WriteAllText(filePath, "content");
+
+            DocumentService _documentService = new(_MockLogger.Object, _fileSystem, _fileMetadata, _MockUserNotifier.Object, _TempDirectory);
+
+            _documentService.UnblockFile(filePath);
+
+            Assert.IsTrue(File.Exists(filePath));
+        }
+
+        /// <summary>
         /// Checks whether the HideFile method removes the hidden attribute.
         /// </summary>
         [TestMethod]

@@ -258,6 +258,24 @@ namespace GoogleDriveSync.PersistenceTests.Implementations
         }
 
         /// <summary>
+        /// Checks whether the Open method returns a stream.
+        /// </summary>
+        [TestMethod]
+        public void TestOpen()
+        {
+            FileSystemWrapper _wrapper = new();
+
+            string filePath = Path.Combine(_TempDirectory, "open.txt");
+            File.WriteAllText(filePath, "test");
+
+            using (Stream stream = _wrapper.Open(filePath))
+            {
+                Assert.IsTrue(stream.CanRead);
+                Assert.IsTrue(stream.CanWrite);
+            }
+        }
+
+        /// <summary>
         /// Checks whether the OpenRead method returns a readable stream.
         /// </summary>
         [TestMethod]
