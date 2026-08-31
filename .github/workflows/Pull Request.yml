@@ -30,9 +30,9 @@ jobs:
 
     - name: Run tests with coverage
       run: |
-        dotnet test "Tests/Google Drive Sync.UnitTests/Google Drive Sync.UnitTests.csproj" --configuration Release --no-build --verbosity normal --settings coverlet.runsettings --collect:"XPlat Code Coverage" --results-directory ./TestResults
-        dotnet test "Tests/Google Drive Sync.PersistenceTests/Google Drive Sync.PersistenceTests.csproj" --configuration Release --no-build --verbosity normal --settings coverlet.runsettings --collect:"XPlat Code Coverage" --results-directory ./TestResults
-        dotnet test "Tests/Google Drive Sync.IntegrationTests/Google Drive Sync.IntegrationTests.csproj" --configuration Release --no-build --verbosity normal --settings coverlet.runsettings --collect:"XPlat Code Coverage" --results-directory ./TestResults
+        dotnet test "Tests/Google Drive Sync.UnitTests/Google Drive Sync.UnitTests.csproj" --configuration Release --verbosity normal --settings coverlet.runsettings --collect:"XPlat Code Coverage" --results-directory ./TestResults
+        dotnet test "Tests/Google Drive Sync.PersistenceTests/Google Drive Sync.PersistenceTests.csproj" --configuration Release --verbosity normal --settings coverlet.runsettings --collect:"XPlat Code Coverage" --results-directory ./TestResults
+        dotnet test "Tests/Google Drive Sync.IntegrationTests/Google Drive Sync.IntegrationTests.csproj" --configuration Release --verbosity normal --settings coverlet.runsettings --collect:"XPlat Code Coverage" --results-directory ./TestResults
 
     - name: Install ReportGenerator
       run: dotnet tool install --global dotnet-reportgenerator-globaltool
