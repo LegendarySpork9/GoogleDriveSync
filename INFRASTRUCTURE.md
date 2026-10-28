@@ -209,7 +209,7 @@ After downloading a file from Google Drive:
 
 ### Google OAuth 2.0
 
-- **Scope:** `DriveService.Scope.Drive` (full Google Drive access)
+- **Scope:** `DriveService.Scope.Drive` (full Google Drive access — required for syncing existing folders and files the app did not create)
 - **Credential Source:** OAuth client credentials JSON file (path configured via `CredentialsLocation`)
 - **Flow:** `GoogleWebAuthorizationBroker.AuthorizeAsync` launches a browser-based consent flow
 - **Token Storage:** Handled by the Google API client library
